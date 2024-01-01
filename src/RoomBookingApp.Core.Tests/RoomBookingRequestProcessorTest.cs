@@ -114,7 +114,7 @@ public class RoomBookingRequestProcessorTest
             _roomBookingServiceMock.Setup(q => q.Save(It.IsAny<RoomBooking>()))
                 .Callback<RoomBooking>(booking => 
                 {
-                    booking.Id = roomBookingId.Value;
+                    booking.Id = roomBookingId!.Value;
                 });
         }
         
