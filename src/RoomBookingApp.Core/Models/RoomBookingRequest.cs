@@ -1,6 +1,6 @@
-namespace RoomBookingApp.Core.Tests;
+﻿namespace RoomBookingApp.Core.Models;
 
-internal class RoomBookingResult
+public class RoomBookingRequest
 {
     public string FullName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
