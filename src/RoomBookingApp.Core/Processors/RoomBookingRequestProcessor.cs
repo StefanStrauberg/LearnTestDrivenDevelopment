@@ -13,8 +13,22 @@ public class RoomBookingRequestProcessor(IRoomBookingService roomBookingService)
     {
         if (bookingRequest is not null)
         {
-            _roomBookingService.Save(CreateRoomBookingObject<RoomBooking>(bookingRequest));
-            return CreateRoomBookingObject<RoomBookingResult>(bookingRequest);
+            var availableRooms = _roomBookingService.GetAvailableRooms(bookingRequest.Date);
+            var result = CreateRoomBookingObject<RoomBookingResult>(bookingRequest);
+
+            if (availableRooms.Any())
+            {
+                var room = availableRooms.First();
+                var roomBooking = CreateRoomBookingObject<RoomBooking>(bookingRequest);
+                roomBooking.Id = room.Id;
+                _roomBookingService.Save(roomBooking);
+                result.RoomBookingId = roomBooking.Id;
+                result.Flag = Enums.BookingResultFlag.Success;
+            }
+            else
+                result.Flag = Enums.BookingResultFlag.Failure;
+            
+            return result;
         }
 
         throw new ArgumentNullException(nameof(bookingRequest));
