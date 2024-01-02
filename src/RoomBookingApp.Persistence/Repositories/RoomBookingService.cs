@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using RoomBookingApp.Core.DataServices;
 using RoomBookingApp.Core.Domain;
 using RoomBookingApp.Domain;
@@ -9,16 +10,15 @@ namespace RoomBookingApp.Persistence.Repositories
         readonly RoomBookingAppDbContext _context = context
             ?? throw new ArgumentNullException(nameof(context));
 
+        public async Task<IEnumerable<Room>> GetAvailableRooms(DateTime date)
+            => await _context.Rooms
+                             .Where(q => !q.RoomBookings.Any(x => x.Date == date))
+                             .ToListAsync();
 
-        public IEnumerable<Room> GetAvailableRooms(DateTime date)
-            => _context.Rooms
-                       .Where(q => !q.RoomBookings.Any(x => x.Date == date))
-                       .ToList();
-
-        public void Save(RoomBooking roomBooking)
+        public async Task Save(RoomBooking roomBooking)
         {
-            _context.RoomBookings.Add(roomBooking);
-            _context.SaveChanges();
+            await _context.RoomBookings.AddAsync(roomBooking);
+            await _context.SaveChangesAsync();
         }
 
     }

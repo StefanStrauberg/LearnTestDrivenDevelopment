@@ -14,7 +14,7 @@ public class RoomBookingServiceTest
     }
 
     [Fact]
-    public void Should_Return_Available_Rooms()
+    public async Task Should_Return_Available_Rooms()
     {
         // Arrange
         var date = new DateTime(2021, 06, 09);
@@ -35,7 +35,7 @@ public class RoomBookingServiceTest
         var roomBookingService = new RoomBookingService(context);
 
         // Act
-        var availableRooms = roomBookingService.GetAvailableRooms(date);
+        var availableRooms = await roomBookingService.GetAvailableRooms(date);
 
         // Assert
         availableRooms.Count().ShouldBe(2);
@@ -45,7 +45,7 @@ public class RoomBookingServiceTest
     }
 
     [Fact]
-    public void Should_Save_Room_Booking()
+    public async Task Should_Save_Room_Booking()
     {
         var dbOptions = new DbContextOptionsBuilder<RoomBookingAppDbContext>().UseInMemoryDatabase("ShouldSaveTest")
                                                                               .Options;
@@ -53,7 +53,7 @@ public class RoomBookingServiceTest
 
         using var context = new RoomBookingAppDbContext(dbOptions);
         var roomBookingService = new RoomBookingService(context);
-        roomBookingService.Save(roomBooking);
+        await roomBookingService.Save(roomBooking);
 
         var bookings = context.RoomBookings.ToList();
         var booking = bookings.ShouldHaveSingleItem();

@@ -5,6 +5,6 @@ namespace RoomBookingApp.Core.DataServices;
 
 public interface IRoomBookingService
 {
-    IEnumerable<Room> GetAvailableRooms(DateTime date);
-    void Save(RoomBooking roomBooking);
+    Task<IEnumerable<Room>> GetAvailableRooms(DateTime date);
+    Task Save(RoomBooking roomBooking);
 }

@@ -27,16 +27,16 @@ public class RoomBookingRequestProcessorTest
         _roomBookingServiceMock = new Mock<IRoomBookingService>();
         _availableRooms = [ new() { Id = 1 } ];
         _roomBookingServiceMock.Setup(q => q.GetAvailableRooms(_request.Date))
-            .Returns(_availableRooms);
+            .ReturnsAsync(_availableRooms);
         _processor = new RoomBookingRequestProcessor(_roomBookingServiceMock.Object);
     }
 
     [Fact]
-    public void Should_Return_Room_Booking_Response_With_Request_Values()
+    public async Task Should_Return_Room_Booking_Response_With_Request_Values()
     {
         // Arrange
         // Act
-        var result = _processor.BookRoom(_request);
+        var result = await _processor.BookRoom(_request);
 
         // Assert
         result.ShouldNotBeNull();
@@ -46,18 +46,18 @@ public class RoomBookingRequestProcessorTest
     }
 
     [Fact]
-    public void Should_Throw_Exception_For_Null_Request()
+    public async Task Should_Throw_Exception_For_Null_Request()
     {
         // Arrange
         // Act
 
         // Assert
-        var exception = Should.Throw<ArgumentNullException>(() => _processor.BookRoom(null));
+        var exception = await Should.ThrowAsync<ArgumentNullException>(async () => await _processor.BookRoom(null));
         exception.ParamName.ShouldBe("bookingRequest");
     }
 
     [Fact]
-    public void Should_Save_Room_Booking_Request()
+    public async Task Should_Save_Room_Booking_Request()
     {
         // Arrange
         RoomBooking? savedBooking = null;
@@ -68,7 +68,7 @@ public class RoomBookingRequestProcessorTest
             });
 
         // Act
-        _processor.BookRoom(_request);
+        await _processor.BookRoom(_request);
         _roomBookingServiceMock.Verify(q => q.Save(It.IsAny<RoomBooking>()),
                                        Times.Once);
 
@@ -81,10 +81,10 @@ public class RoomBookingRequestProcessorTest
     }
 
     [Fact]
-    public void Should_Not_Save_Room_Booking_Request_If_None_Available()
+    public async Task Should_Not_Save_Room_Booking_Request_If_None_Available()
     {
         _availableRooms.Clear();
-        _processor.BookRoom(_request);
+        await _processor.BookRoom(_request);
         _roomBookingServiceMock.Verify(q => q.Save(It.IsAny<RoomBooking>()),
                                        Times.Never);
     }
@@ -92,20 +92,20 @@ public class RoomBookingRequestProcessorTest
     [Theory]
     [InlineData(BookingResultFlag.Failure, false)]
     [InlineData(BookingResultFlag.Success, true)]
-    public void Should_Return_SuccessOrFailure_Flag_In_Result(BookingResultFlag bookingResultFlag,
+    public async Task Should_Return_SuccessOrFailure_Flag_In_Result(BookingResultFlag bookingResultFlag,
                                                               bool isAvailable)
     {
         if (!isAvailable)
             _availableRooms.Clear();
 
-        var result = _processor.BookRoom(_request);
+        var result = await _processor.BookRoom(_request);
         bookingResultFlag.ShouldBe(result.Flag);
     }
 
     [Theory]
     [InlineData(1, true)]
     [InlineData(null, false)]
-    public void Should_Return_RoomBookingId_In_Result(int? roomBookingId,
+    public async Task Should_Return_RoomBookingId_In_Result(int? roomBookingId,
                                                       bool isAvailable)
     {
         if (!isAvailable)
@@ -119,7 +119,7 @@ public class RoomBookingRequestProcessorTest
                 });
         }
         
-        var result = _processor.BookRoom(_request);
+        var result = await _processor.BookRoom(_request);
         result.RoomBookingId.ShouldBe(roomBookingId);
     }
 }
