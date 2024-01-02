@@ -1,5 +1,3 @@
-using RoomBookingApp.Core.Domain;
-
 namespace RoomBookingApp.Domain;
 
 public class Room

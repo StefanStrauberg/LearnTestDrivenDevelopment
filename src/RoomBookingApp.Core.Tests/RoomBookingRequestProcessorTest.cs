@@ -1,6 +1,5 @@
 using Moq;
 using RoomBookingApp.Core.DataServices;
-using RoomBookingApp.Core.Domain;
 using RoomBookingApp.Core.Enums;
 using RoomBookingApp.Core.Models;
 using RoomBookingApp.Core.Processors;
@@ -61,7 +60,7 @@ public class RoomBookingRequestProcessorTest
     {
         // Arrange
         RoomBooking? savedBooking = null;
-        _roomBookingServiceMock.Setup(q => q.Save(It.IsAny<RoomBooking>()))
+        _roomBookingServiceMock.Setup(q => q.SaveBooking(It.IsAny<RoomBooking>()))
             .Callback<RoomBooking>(booking => 
             { 
                 savedBooking = booking;
@@ -69,7 +68,7 @@ public class RoomBookingRequestProcessorTest
 
         // Act
         await _processor.BookRoom(_request);
-        _roomBookingServiceMock.Verify(q => q.Save(It.IsAny<RoomBooking>()),
+        _roomBookingServiceMock.Verify(q => q.SaveBooking(It.IsAny<RoomBooking>()),
                                        Times.Once);
 
         // Assert
@@ -85,7 +84,7 @@ public class RoomBookingRequestProcessorTest
     {
         _availableRooms.Clear();
         await _processor.BookRoom(_request);
-        _roomBookingServiceMock.Verify(q => q.Save(It.IsAny<RoomBooking>()),
+        _roomBookingServiceMock.Verify(q => q.SaveBooking(It.IsAny<RoomBooking>()),
                                        Times.Never);
     }
 
@@ -112,7 +111,7 @@ public class RoomBookingRequestProcessorTest
             _availableRooms.Clear();
         else
         {
-            _roomBookingServiceMock.Setup(q => q.Save(It.IsAny<RoomBooking>()))
+            _roomBookingServiceMock.Setup(q => q.SaveBooking(It.IsAny<RoomBooking>()))
                 .Callback<RoomBooking>(booking => 
                 {
                     booking.Id = roomBookingId!.Value;

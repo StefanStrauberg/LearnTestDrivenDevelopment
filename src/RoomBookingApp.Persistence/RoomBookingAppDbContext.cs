@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using RoomBookingApp.Core.Domain;
 using RoomBookingApp.Domain;
 
 namespace RoomBookingApp.Persistence;

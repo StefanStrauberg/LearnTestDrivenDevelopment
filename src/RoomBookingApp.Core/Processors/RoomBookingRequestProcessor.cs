@@ -1,5 +1,4 @@
 using RoomBookingApp.Core.DataServices;
-using RoomBookingApp.Core.Domain;
 using RoomBookingApp.Core.Models;
 using RoomBookingApp.Domain;
 using RoomBookingApp.Domain.BaseModels;
@@ -24,8 +23,9 @@ public class RoomBookingRequestProcessor(IRoomBookingService roomBookingService)
                 RoomBooking roomBooking = CreateRoomBookingObject<RoomBooking>(bookingRequest);
 
                 roomBooking.Id = room.Id;
+                roomBooking.Room = room;
 
-                await _roomBookingService.Save(roomBooking);
+                await _roomBookingService.SaveBooking(roomBooking);
                 
                 result.RoomBookingId = roomBooking.Id;
                 result.Flag = Enums.BookingResultFlag.Success;

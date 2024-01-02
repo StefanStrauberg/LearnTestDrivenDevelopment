@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using RoomBookingApp.Core.DataServices;
-using RoomBookingApp.Core.Domain;
 using RoomBookingApp.Domain;
 
 namespace RoomBookingApp.Persistence.Repositories
@@ -15,7 +14,7 @@ namespace RoomBookingApp.Persistence.Repositories
                              .Where(q => !q.RoomBookings.Any(x => x.Date == date))
                              .ToListAsync();
 
-        public async Task Save(RoomBooking roomBooking)
+        public async Task SaveBooking(RoomBooking roomBooking)
         {
             await _context.RoomBookings.AddAsync(roomBooking);
             await _context.SaveChangesAsync();

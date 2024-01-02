@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RoomBookingApp.API.Controllers;
+using RoomBookingApp.Core.Enums;
 using RoomBookingApp.Core.Models;
 using RoomBookingApp.Core.Processors;
 using Shouldly;
@@ -26,16 +27,18 @@ public class RoomBookingControllerTests
     }
 
     [Theory]
-    [InlineData(1, true, typeof(OkObjectResult))]
-    [InlineData(0, false, typeof(BadRequestObjectResult))]
+    [InlineData(1, true, BookingResultFlag.Success, typeof(OkObjectResult))]
+    [InlineData(0, false, BookingResultFlag.Failure, typeof(BadRequestObjectResult))]
     public async Task Should_Call_Booking_Method_When_Valid(int expectedMethodCalls,
                                                             bool isModelValid,
+                                                            BookingResultFlag bookingResultFlag,
                                                             Type expectedActionResultType)
     {
         // Arrange
         if (!isModelValid)
             _controller.ModelState.AddModelError("Key", "ErrorMessage");
         
+        _result.Flag = bookingResultFlag;
         // Act
         var result = await _controller.BookRoom(_request);
 

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using RoomBookingApp.Core.Domain;
 using RoomBookingApp.Domain;
 using RoomBookingApp.Persistence.Repositories;
 using Shouldly;
@@ -53,7 +52,7 @@ public class RoomBookingServiceTest
 
         using var context = new RoomBookingAppDbContext(dbOptions);
         var roomBookingService = new RoomBookingService(context);
-        await roomBookingService.Save(roomBooking);
+        await roomBookingService.SaveBooking(roomBooking);
 
         var bookings = context.RoomBookings.ToList();
         var booking = bookings.ShouldHaveSingleItem();
