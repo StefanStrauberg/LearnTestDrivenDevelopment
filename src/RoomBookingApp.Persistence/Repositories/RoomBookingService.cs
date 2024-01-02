@@ -11,13 +11,14 @@ namespace RoomBookingApp.Persistence.Repositories
 
 
         public IEnumerable<Room> GetAvailableRooms(DateTime date)
-        {
-            throw new NotImplementedException();
-        }
+            => _context.Rooms
+                       .Where(q => !q.RoomBookings.Any(x => x.Date == date))
+                       .ToList();
 
         public void Save(RoomBooking roomBooking)
         {
-            throw new NotImplementedException();
+            _context.RoomBookings.Add(roomBooking);
+            _context.SaveChanges();
         }
 
     }
