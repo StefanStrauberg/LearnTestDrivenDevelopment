@@ -20,7 +20,6 @@ public class RoomBookingController(IRoomBookingRequestProcessor roomBookingServi
             var result = await _roomBookingProcessor.BookRoom(request);
             if (result.Flag == BookingResultFlag.Success)
                 return Ok(result);
-                
             ModelState.AddModelError(nameof(RoomBookingRequest.Date), "No rooms available for given date.");
         }
         return BadRequest(ModelState);
